@@ -25,6 +25,7 @@ func HomeHandler(app *config.App) http.HandlerFunc {
 		if err != nil {
 			app.ErrorLog.Println("Error occurred while parsing templates...", err)
 			app.ServerError(w, err, http.StatusInternalServerError)
+			return
 		}
 
 		if ts == nil {
