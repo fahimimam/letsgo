@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"github.com/fahimimam/letsgo/cmd/web/config"
 	"html/template"
@@ -12,7 +13,7 @@ import (
 func HomeHandler(app *config.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
-			http.NotFound(w, r)
+			app.NotFound(w)
 			return
 		}
 		files := []string{
@@ -23,13 +24,18 @@ func HomeHandler(app *config.App) http.HandlerFunc {
 		ts, err := template.ParseFiles(files...)
 		if err != nil {
 			app.ErrorLog.Println("Error occurred while parsing templates...", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.ServerError(w, err, http.StatusInternalServerError)
+		}
+
+		if ts == nil {
+			app.ServerError(w, errors.New("templates not found"), http.StatusInternalServerError)
+			return
 		}
 
 		err = ts.ExecuteTemplate(w, "base", nil)
 		if err != nil {
 			app.ErrorLog.Println("Error occurred while executing templates...", err)
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			app.ServerError(w, err, http.StatusInternalServerError)
 		}
 		app.InfoLog.Println("rendered home page successfully...")
 	}
@@ -39,13 +45,14 @@ func SnippetViewHandler(app *config.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.URL.Query().Get("id"))
 		if err != nil || id < 1 {
-			http.NotFound(w, r)
+			app.NotFound(w)
 			return
 		}
 		bytesWritten, err := fmt.Fprintf(w, "Displaying a specific snippet with id: %d", id)
 		app.InfoLog.Println("Written ", bytesWritten, " Bytes to response...")
 		if err != nil {
 			app.ErrorLog.Println("Error occurred while returning response...", err)
+			app.ServerError(w, err, http.StatusInternalServerError)
 			return
 		}
 
@@ -56,14 +63,15 @@ func SnippetCreateHandler(app *config.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			w.Header().Set("Allow", "POST")
-			app.ErrorLog.Println("Method apart from post not allowed")
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			app.ServerError(w, errors.New("method apart from post not allowed"), http.StatusMethodNotAllowed)
 			return
 		}
 
 		bytesWritten, err := fmt.Fprintf(w, "Created a new snippet...")
 		log.Println("Written ", bytesWritten, " Bytes to response...")
 		if err != nil {
+			app.ErrorLog.Println("Error occurred while returning response...", err)
+			app.ServerError(w, err, http.StatusInternalServerError)
 			return
 		}
 	}
