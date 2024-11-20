@@ -39,10 +39,21 @@ func main() {
 	errorLog := log.New(os.Stderr, "[ERROR]\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	// Initialize app for dependency injection - (For now it's only the logger)
+	stackTrace := os.Getenv("STACK_TRACE")
 	app := &config.App{
-		ErrorLog: errorLog,
-		InfoLog:  infoLog,
+		ErrorLog:         errorLog,
+		InfoLog:          infoLog,
+		EnableStackTrace: stackTrace == "true",
 	}
+	if app.EnableStackTrace {
+		infoLog.Println("Trace is online")
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered. Error:\n", r)
+		}
+	}()
 
 	mux := http.NewServeMux()
 
