@@ -1,0 +1,8 @@
+# github.com/fahimimam/letsgo v0.0.0-20241121055211-324d7bdd80de
+## explicit; go 1.23.0
+github.com/fahimimam/letsgo/cmd/web/config
+github.com/fahimimam/letsgo/cmd/web/handlers
+github.com/fahimimam/letsgo/cmd/web/routes
+# github.com/joho/godotenv v1.5.1
+## explicit; go 1.12
+github.com/joho/godotenv

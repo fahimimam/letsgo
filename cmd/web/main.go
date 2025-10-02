@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/fahimimam/letsgo/cmd/web/config"
 	"github.com/fahimimam/letsgo/cmd/web/routes"
 )

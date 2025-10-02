@@ -3,11 +3,12 @@ package handlers
 import (
 	"errors"
 	"fmt"
-	"github.com/fahimimam/letsgo/cmd/web/config"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/fahimimam/letsgo/cmd/web/config"
 )
 
 func HomeHandler(app *config.App) http.HandlerFunc {

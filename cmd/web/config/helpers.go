@@ -1,13 +1,14 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"regexp"
+
+	"github.com/joho/godotenv"
 )
 
-const projectDirName = "letsgo"
+const projectDirName = "letsgo-old"
 
 func loadEnv() {
 	projectName := regexp.MustCompile(`^(.*` + projectDirName + `)`)

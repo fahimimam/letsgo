@@ -1,9 +1,10 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/fahimimam/letsgo/cmd/web/config"
 	"github.com/fahimimam/letsgo/cmd/web/handlers"
-	"net/http"
 )
 
 func AppRoutes(app *config.App) *http.ServeMux {
